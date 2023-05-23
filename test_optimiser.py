@@ -121,45 +121,36 @@ if __name__ == '__main__':
         OptimiserArgument("batch_size", [16, 32, 64, 128])
     ], train)
     previous_time = time.time()
-    opt.initialise(15)
+    opt.optimise(15)
     print(f"Time taken: {time.time() - previous_time}")
     opt.save("pre_initialised")
 
-    ucb_lambda_options = [1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
-    length_scale_options = [1, 2, 3, 4, 5, 6, 7, 8]
-    signal_variance_options = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    noise_scale_options = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    print()
+    print()
+    print("="*150)
+    print()
+    print()
 
-    for i in range(30):
-        start_time = time.time()
+    print("Random Search")
+    opt = BayesianOptimiser.load("pre_initialised")
+    previous_time = time.time()
+    opt.initialise(15)
+    print(f"Time taken: {time.time() - previous_time}")
+    print(opt.get_best_arguments())
+    opt.save("bayes")
+    opt.plot_scatter("size", "accuracy", log_x=True)
 
-        print(f"Iteration #{i}")
+    print()
+    print()
+    print("="*150)
+    print()
+    print()
 
-        opt = BayesianOptimiser.load("pre_initialised")
-
-        ucb_lambda = random.choice(ucb_lambda_options)
-        length_scale = random.choice(length_scale_options)
-        signal_variance = random.choice(signal_variance_options)
-        noise_scale = random.choice(noise_scale_options)
-
-        print(f"UCB Lambda: {ucb_lambda}, "
-              f"Length Scale: {length_scale}, "
-              f"Signal Variance: {signal_variance}, "
-              f"Noise Scale: {noise_scale}")
-        print()
-
-        opt.ucb_lambda = ucb_lambda
-        opt.length_scale = length_scale
-        opt.signal_variance = signal_variance
-        opt.noise_scale = noise_scale
-
-        print()
-        print(f"Time taken: {round(time.time() - start_time)}s")
-        print()
-        print("=" * 200)
-        print()
-
-
-
-
-
+    print("Bayesian Optimisation")
+    opt = BayesianOptimiser.load("pre_initialised")
+    previous_time = time.time()
+    opt.optimise(15)
+    print(f"Time taken: {time.time() - previous_time}")
+    print(opt.get_best_arguments())
+    opt.save("bayes")
+    opt.plot_scatter("size", "accuracy", log_x=True)
