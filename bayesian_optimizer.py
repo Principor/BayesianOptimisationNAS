@@ -31,10 +31,10 @@ class BayesianOptimiser:
         self._sampled_scores = []
         self._sampled_metrics = []
 
-        self.ucb_lambda = 1.2
-        self.length_scale = 2
-        self.signal_variance = 0.7
-        self.noise_scale = 0.3
+        self.ucb_lambda = 1.1
+        self.length_scale = 5
+        self.signal_variance = 1.0
+        self.noise_scale = 0.5
 
     def initialise(self, n_points):
         print("Initialising...")
@@ -57,9 +57,11 @@ class BayesianOptimiser:
         return args, score
 
     def plot_scatter(self, x_axis, y_axis, log_x=False, log_y=False):
-        data = pd.DataFrame.from_records(self._sampled_metrics)
+        sampled_args = [self._argument_values[i] for i in self._sampled_indices]
+        frames = [pd.DataFrame.from_records(self._sampled_metrics), pd.DataFrame.from_records(sampled_args)]
+        data = pd.concat(frames, axis=1, join='inner')
         fig = px.scatter(
-            data, x=x_axis, y=y_axis, log_x=log_x, log_y=log_y,
+            data, x=x_axis, y=y_axis, log_x=log_x, log_y=log_y, hover_data=data.columns.values
         )
         fig.show()
 
